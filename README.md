@@ -1,8 +1,20 @@
 # 사람을 웹캠으로 검출하여 실시간 counting 
 
-## ncs2 example
+## dependency
+- raspberry pi
+- Neural Compute Stick 2 
+- webcam
 
-- [HERE](https://jjeamin.github.io/yolo,pi/2019/03/30/yolo-openvino/)
+## requirement
+- openvino
+- opencv
+
+
+## 필독!!
+
+- [[라즈베리파이에 openvino 사용하기](https://jjeamin.github.io/pi/2019/03/08/NCS2/)]
+- [[파일 변환](https://jjeamin.github.io/pi/2019/03/08/NCS2_IR/)]
+- [[파일 변환 - YOLO](https://jjeamin.github.io/yolo,pi/2019/03/30/yolo-openvino/)]
 
 ## pd_convert
 
