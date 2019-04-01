@@ -1,6 +1,6 @@
 # OPENVINO를 이용한 human counting
 
-## 
+## 구성
 - raspberry pi 3
 - Neural Compute Stick 2 
 - webcam
