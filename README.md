@@ -1,4 +1,4 @@
-# 사람을 웹캠으로 검출하여 실시간 counting 
+# OPENVINO를 이용한 human counting
 
 ## 
 - raspberry pi 3
