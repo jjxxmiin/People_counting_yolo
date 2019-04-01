@@ -1,6 +1,6 @@
 # 사람을 웹캠으로 검출하여 실시간 counting 
 
-## dependency
+## 
 - raspberry pi 3
 - Neural Compute Stick 2 
 - webcam
