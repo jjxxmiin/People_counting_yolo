@@ -6,23 +6,6 @@ import time
 xml_path = '/home/pi/workspace/IR/tiny-yolov3.xml'
 bin_path = '/home/pi/workspace/IR/tiny-yolov3.bin'
 
-LABELS = ("person", "bicycle", "car", "motorbike", "aeroplane",
-          "bus", "train", "truck", "boat", "traffic light",
-          "fire hydrant", "stop sign", "parking meter", "bench", "bird",
-          "cat", "dog", "horse", "sheep", "cow",
-          "elephant", "bear", "zebra", "giraffe", "backpack",
-          "umbrella", "handbag", "tie", "suitcase", "frisbee",
-          "skis", "snowboard", "sports ball", "kite", "baseball bat",
-          "baseball glove", "skateboard", "surfboard","tennis racket", "bottle",
-          "wine glass", "cup", "fork", "knife", "spoon",
-          "bowl", "banana", "apple", "sandwich", "orange",
-          "broccoli", "carrot", "hot dog", "pizza", "donut",
-          "cake", "chair", "sofa", "pottedplant", "bed",
-          "diningtable", "toilet", "tvmonitor", "laptop", "mouse",
-          "remote", "keyboard", "cell phone", "microwave", "oven",
-          "toaster", "sink", "refrigerator", "book", "clock",
-          "vase", "scissors", "teddy bear", "hair drier", "toothbrush")
-
 # network 생성
 net = IENetwork(model = xml_path,weights = bin_path)
 '''
@@ -58,3 +41,6 @@ res = exec_net.infer({'inputs':prepimg})
 end = time.time()
 
 print('inference time : ',end-start)
+
+print(res)
+print(res.shape)
