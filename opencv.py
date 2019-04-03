@@ -1,15 +1,15 @@
 import cv2, time
 
 # ===== OPENCV =====
-xml_path = 'C:/Users/woals/Desktop/IR/tiny-yolov3.xml'
-bin_path = 'C:/Users/woals/Desktop/IR/tiny-yolov3.bin'
+xml_path = '/home/pi/workspace/IR/tiny-yolov3.xml'
+bin_path = '/home/pi/workspace/IR/tiny-yolov3.bin'
 
 cam = cv2.VideoCapture(0)
 
 # Load the model
 net = cv2.dnn.readNet(xml_path, bin_path)
 # Specify target device
-net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+net.setPreferableTarget(cv2.dnn.DNN_TARGET_MYRIAD)
 
 while (True):
     ret, frame = cam.read()
