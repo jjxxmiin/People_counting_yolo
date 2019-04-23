@@ -51,7 +51,7 @@
       keywords={Benchmark testing;Complexity theory;Detectors;Kalman filters;Target tracking;Visualization;Computer Vision;Data Association;Detection;Multiple Object Tracking},
       doi={10.1109/ICIP.2016.7533003}
     }
-    
-### DEEPSORT :
 
+### GITHUB :
+- [https://github.com/PINTO0309/OpenVINO-YoloV3](https://github.com/PINTO0309/OpenVINO-YoloV3)
 - [https://github.com/nwojke/deep_sort](https://github.com/nwojke/deep_sort)
