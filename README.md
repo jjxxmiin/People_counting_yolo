@@ -52,3 +52,6 @@
       doi={10.1109/ICIP.2016.7533003}
     }
     
+### DEEPSORT :
+
+- [https://github.com/nwojke/deep_sort](https://github.com/nwojke/deep_sort)
