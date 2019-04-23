@@ -55,3 +55,4 @@
 ### GITHUB :
 - [https://github.com/PINTO0309/OpenVINO-YoloV3](https://github.com/PINTO0309/OpenVINO-YoloV3)
 - [https://github.com/nwojke/deep_sort](https://github.com/nwojke/deep_sort)
+- [https://github.com/guillelopez/python-traffic-counter-with-yolo-and-sort](https://github.com/guillelopez/python-traffic-counter-with-yolo-and-sort)
