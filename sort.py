@@ -25,7 +25,7 @@ from filterpy.kalman import KalmanFilter
 @jit
 def iou(bb_test,bb_gt):
   """
-  Computes IUO between two bboxes in the form [x1,y1,x2,y2]
+  [x1,y1,x2,y2] 형태의 박스 2개 비교
   """
   xx1 = np.maximum(bb_test[0], bb_gt[0])
   yy1 = np.maximum(bb_test[1], bb_gt[1])
@@ -40,9 +40,12 @@ def iou(bb_test,bb_gt):
 
 def convert_bbox_to_z(bbox):
   """
-  Takes a bounding box in the form [x1,y1,x2,y2] and returns z in the form
-    [x,y,s,r] where x,y is the centre of the box and s is the scale/area and r is
-    the aspect ratio
+  위에 estimate model에서 식을 구현하였다. [x1,y1,x2,y2] -> [x,y,s,r]
+
+- `u` : target의 중심 가로 픽셀 위치
+- `v` : target의 중심 세로 픽셀 위치
+- `s` : target의 bounding box의 크기
+- `r` : target의 bounding box의 종횡비(가로 : 세로 비율)
   """
   w = bbox[2]-bbox[0]
   h = bbox[3]-bbox[1]
@@ -54,8 +57,7 @@ def convert_bbox_to_z(bbox):
 
 def convert_x_to_bbox(x,score=None):
   """
-  Takes a bounding box in the centre form [x,y,s,r] and returns it in the form
-    [x1,y1,x2,y2] where x1,y1 is the top left and x2,y2 is the bottom right
+  위에 함수와 반대로 [x,y,s,r] -> [x1,y1,x2,y2]
   """
   w = np.sqrt(x[2]*x[3])
   h = x[2]/w
@@ -66,24 +68,30 @@ def convert_x_to_bbox(x,score=None):
 
 class KalmanBoxTracker(object):
   """
-  This class represents the internel state of individual tracked objects observed as bbox.
+  이 class는 bounding box로 tracking object의 내부 상태를 나타낸다.
   """
   count = 0
   def __init__(self,bbox):
     """
-    Initialises a tracker using initial bounding box.
+    bounding box를 이용해 tracker 초기화
     """
-    #define constant velocity model
+    # 등속모델 정의
+    # dim_x : 상태 변수의 수
+    # dim_z : 측정 입력의 수(좌표의 수) [x1,y1,x2,y2] = 4
     self.kf = KalmanFilter(dim_x=7, dim_z=4)
+    # 상태전이행렬
     self.kf.F = np.array([[1,0,0,0,1,0,0],[0,1,0,0,0,1,0],[0,0,1,0,0,0,1],[0,0,0,1,0,0,0],  [0,0,0,0,1,0,0],[0,0,0,0,0,1,0],[0,0,0,0,0,0,1]])
+    # 측정 기능
     self.kf.H = np.array([[1,0,0,0,0,0,0],[0,1,0,0,0,0,0],[0,0,1,0,0,0,0],[0,0,0,1,0,0,0]])
-
+    # 측정 잡음행렬
     self.kf.R[2:,2:] *= 10.
-    self.kf.P[4:,4:] *= 1000. #give high uncertainty to the unobservable initial velocities
+    # 공분산 행렬
+    self.kf.P[4:,4:] *= 1000. 
     self.kf.P *= 10.
+    # 프로세스 잡음행렬
     self.kf.Q[-1,-1] *= 0.01
     self.kf.Q[4:,4:] *= 0.01
-
+    # 상태 측정 벡터
     self.kf.x[:4] = convert_bbox_to_z(bbox)
     self.time_since_update = 0
     self.id = KalmanBoxTracker.count
@@ -95,7 +103,7 @@ class KalmanBoxTracker(object):
 
   def update(self,bbox):
     """
-    Updates the state vector with observed bbox.
+    상태 업데이트(재귀적)
     """
     self.time_since_update = 0
     self.history = []
@@ -105,7 +113,7 @@ class KalmanBoxTracker(object):
 
   def predict(self):
     """
-    Advances the state vector and returns the predicted bounding box estimate.
+    벡터상태수정 and 예측된 bounding box 추정치 반환.(재귀적)
     """
     if((self.kf.x[6]+self.kf.x[2])<=0):
       self.kf.x[6] *= 0.0
@@ -119,16 +127,16 @@ class KalmanBoxTracker(object):
 
   def get_state(self):
     """
-    Returns the current bounding box estimate.
+    현재 bounding box 추정치 반환
     """
     return convert_x_to_bbox(self.kf.x)
 
 def associate_detections_to_trackers(detections,trackers,iou_threshold = 0.3):
   """
-  Assigns detections to tracked object (both represented as bounding boxes)
-
-  Returns 3 lists of matches, unmatched_detections and unmatched_trackers
+  tracking object(둘 다 bounding box)에 detection을 지정합니다.
+  unmatched_detections 및 unmatched_trackers와 match 3 개의 목록을 반환합니다.
   """
+  # 추적 하는게 없다면 반환
   if(len(trackers)==0) or (len(detections)==0):
     return np.empty((0,2),dtype=int), np.arange(len(detections)), np.empty((0,5),dtype=int)
   iou_matrix = np.zeros((len(detections),len(trackers)),dtype=np.float32)
@@ -136,6 +144,7 @@ def associate_detections_to_trackers(detections,trackers,iou_threshold = 0.3):
   for d,det in enumerate(detections):
     for t,trk in enumerate(trackers):
       iou_matrix[d,t] = iou(det,trk)
+  # Hungarian Algorithm
   matched_indices = linear_assignment(-iou_matrix)
 
   unmatched_detections = []
@@ -175,14 +184,13 @@ class Sort(object):
   def update(self,dets):
     """
     Params:
-      dets - a numpy array of detections in the format [[x,y,w,h,score],[x,y,w,h,score],...]
-    Requires: this method must be called once for each frame even with empty detections.
-    Returns the a similar array, where the last column is the object ID.
-
-    NOTE: The number of objects returned may differ from the number of detections provided.
+      dets - [[x1,y1,x2,y2,score],[x1,y1,x2,y2,score],...]
+    요구 사항 : 빈 frame이있는 경우에도 각 frame마다 한 번 호출해야합니다.
+    마지막 열이 object ID 인 유사도 배열을 반환합니다.
+    NOTE: 반환 된 object 수는 제공된 detection 수와 다를 수 있습니다.
     """
     self.frame_count += 1
-    #get predicted locations from existing trackers.
+    #existing trackers로 부터 예상위치를 얻는다
     trks = np.zeros((len(self.trackers),5))
     to_del = []
     ret = []
@@ -196,13 +204,13 @@ class Sort(object):
       self.trackers.pop(t)
     matched, unmatched_dets, unmatched_trks = associate_detections_to_trackers(dets,trks)
 
-    #update matched trackers with assigned detections
+    #지정된 detection이 있는 tracker 업데이트
     for t,trk in enumerate(self.trackers):
       if(t not in unmatched_trks):
         d = matched[np.where(matched[:,1]==t)[0],0]
         trk.update(dets[d,:][0])
 
-    #create and initialise new trackers for unmatched detections
+    #unmatched detections을 위한 새로운 tracker 생성/초기화
     for i in unmatched_dets:
         trk = KalmanBoxTracker(dets[i,:])
         self.trackers.append(trk)
@@ -212,7 +220,7 @@ class Sort(object):
         if((trk.time_since_update < 1) and (trk.hit_streak >= self.min_hits or self.frame_count <= self.min_hits)):
           ret.append(np.concatenate((d,[trk.id+1])).reshape(1,-1)) # +1 as MOT benchmark requires positive
         i -= 1
-        #remove dead tracklet
+        #dead tracklet 제거
         if(trk.time_since_update > self.max_age):
           self.trackers.pop(i)
     if(len(ret)>0):
