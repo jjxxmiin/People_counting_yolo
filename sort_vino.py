@@ -224,11 +224,14 @@ while(True) :
     dets.append([objects[i].xmin, objects[i].ymin , objects[i].xmax, objects[i].ymax , objects[i].confidence])
 
   dets = np.asarray(dets)
+  print(dets)
   
-  tracks = tracker.update(dets)
+  if dets.size > 0:
+    tracks = tracker.update(dets)
+      
+    for trk in tracks:
+        cv2.rectangle(frame, (int(trk[0]), int(trk[1])), (int(trk[2]), int(trk[3])), box_color, box_thickness)
   
-  for trk in tracks:
-      cv2.rectangle(frame, (int(trk[0]), int(trk[1])), (int(trk[2]), int(trk[3])), box_color, box_thickness)
   
   cv2.putText(frame, fps, (cam_w - 170, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1, cv2.LINE_AA)
   cv2.imshow("Result", frame)
