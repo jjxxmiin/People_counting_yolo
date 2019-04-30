@@ -14,7 +14,7 @@
 
 - [[라즈베리파이에 openvino 사용하기](https://jjeamin.github.io/pi/2019/03/08/NCS2/)]
 - [[파일 변환](https://jjeamin.github.io/pi/2019/03/08/NCS2_IR/)]
-- [[파일 변환 - YOLO](https://jjeamin.github.io/yolo,pi/2019/03/30/yolo-openvino/)]
+- [[파일 변환 - YOLO](https://jjeamin.github.io/openvino/2019/03/30/yolo-openvino/)]
 
 ## pd_convert
 
