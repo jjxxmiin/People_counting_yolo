@@ -224,7 +224,6 @@ while(True) :
     dets.append([objects[i].xmin, objects[i].ymin , objects[i].xmax, objects[i].ymax , objects[i].confidence])
 
   dets = np.asarray(dets)
-  print(dets)
   
   if dets.size > 0:
     tracks = tracker.update(dets)
