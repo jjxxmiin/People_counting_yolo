@@ -228,9 +228,6 @@ while(True) :
   tracks = tracker.update(dets)
   
   for trk in tracks:
-      label = 0
-      if label != 0:
-          continue
       cv2.rectangle(frame, (int(trk[0]), int(trk[1])), (int(trk[2]), int(trk[3])), box_color, box_thickness)
   
   cv2.putText(frame, fps, (cam_w - 170, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1, cv2.LINE_AA)
