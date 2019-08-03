@@ -216,6 +216,7 @@ while(True) :
               
   dets = []
   boxes = []
+  people_count = 0
   
   for i in range(0,len(objects)):
     if objects[i].confidence < 0.2:
