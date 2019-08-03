@@ -1,5 +1,7 @@
 # OPENVINO를 이용한 human counting
 
+사람을 카운팅 하는 부분은 중간에  추가 시키지 않았다.
+
 ## 구성
 - raspberry pi 3
 - Neural Compute Stick 2 
