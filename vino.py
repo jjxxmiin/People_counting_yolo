@@ -230,6 +230,7 @@ while(True) :
   # print('inference time : ', end - start)
   
   objects = []
+  people_count = 0
 
   ########################
   # parsing
@@ -266,8 +267,8 @@ while(True) :
       #라벨
       label = obj.class_id
       #사람만
-      #if label != 0:
-      #    continue
+      #if label == 0:
+      #    people_count += 1
       #신뢰도
       confidence = obj.confidence
       label_text = LABELS[label] + " (" + "{:.1f}".format(confidence * 100) + "%)"
