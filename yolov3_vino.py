@@ -1,7 +1,8 @@
 try:
-    from armv7l.inference_engine import IENetwork, IEPlugin
+    from armv7l.openvino.inference_engine import IENetwork, IEPlugin
 except:
     from openvino.inference_engine import IENetwork, IEPlugin
+
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 import numpy as np
@@ -15,7 +16,7 @@ import os
 cam_w = 320
 cam_h = 240
 image_size = 416
-anchors = [10,14, 23,27, 37,58, 81,82, 135,169, 344,319]
+anchors = [10,13,16,30,33,23,30,61,62,45,59,119,116,90,156,198,373,326]
 
 fps = ""
 framepos = 0
@@ -40,7 +41,7 @@ new_h = int(cam_h * min(image_size/cam_w, image_size/cam_h))
 #xml_path = '/home/pi/workspace/IR/tiny-yolov3.xml'
 #bin_path = '/home/pi/workspace/IR/tiny-yolov3.bin'
 
-xml_path = "./IR/tiny-yolov3.xml" #<--- MYRIAD
+xml_path = "./IR/yolo_v3.xml" #<--- MYRIAD
 bin_path = os.path.splitext(xml_path)[0] + ".bin"
 
 LABELS = ("person", "bicycle", "car", "motorbike", "aeroplane",
@@ -235,7 +236,7 @@ while(True) :
   ########################
   for output in outputs.values():
       # object : DetectionObject 타입
-      objects = ParseYOLOV3Output(output, new_h, new_w, cam_h, cam_w, 0.4, objects)
+      objects = ParseYOLOV3Output(output, new_h, new_w, cam_h, cam_w, 0.7, objects)
 
   # Filtering overlapping boxes
   # box를 걸러낸다
@@ -248,8 +249,6 @@ while(True) :
       for j in range(i + 1, objlen):
           # box가 많이 겹쳐져있다면 그중에 신뢰도가 높은 box를 뽑아 사용
           if (IntersectionOverUnion(objects[i], objects[j]) >= 0.4):
-              if objects[i].confidence < objects[j].confidence:
-                  objects[i], objects[j] = objects[j], objects[i]
               objects[j].confidence = 0.0
   #########################
 
@@ -267,12 +266,13 @@ while(True) :
       #    people_count += 1
       #신뢰도
       confidence = obj.confidence
-      label_text = LABELS[label] + " (" + "{:.1f}".format(confidence * 100) + "%)"
-      #frame boxing
-      cv2.rectangle(frame, (obj.xmin, obj.ymin), (obj.xmax, obj.ymax), box_color, box_thickness)
-      #frame label text
-      cv2.putText(frame, label_text, (obj.xmin, obj.ymin - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, label_text_color, 1)
-  
+      if confidence > 0.2:
+          label_text = LABELS[label] + " (" + "{:.1f}".format(confidence * 100) + "%)"
+          #frame boxing
+          cv2.rectangle(frame, (obj.xmin, obj.ymin), (obj.xmax, obj.ymax), box_color, box_thickness)
+          #frame label text
+          cv2.putText(frame, label_text, (obj.xmin, obj.ymin - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.6, label_text_color, 1)
+      
   #frame fps text
   cv2.putText(frame, fps, (cam_w - 170, 15), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (38, 0, 255), 1, cv2.LINE_AA)
   cv2.imshow("Result", frame)
