@@ -7,14 +7,7 @@ import imutils
 import math
 import time
 import os
-# multiprocessing을 위한 유용한 모듈
-import multiprocessing as mp
-from tqdm import tqdm
-# 실시간 추적 모듈 sort 사용
-from sort import *
 
-tracker = Sort()
-memory = {}
 # ============================hard coding===============================
 cam_w = 320
 cam_h = 240
@@ -44,7 +37,7 @@ new_h = int(cam_h * min(image_size/cam_w, image_size/cam_h))
 #xml_path = '/home/pi/workspace/IR/tiny-yolov3.xml'
 #bin_path = '/home/pi/workspace/IR/tiny-yolov3.bin'
 
-xml_path = "../lrmodels/YoloV3/FP16/frozen_yolo_v3.xml" #<--- MYRIAD
+xml_path = "./IR/tiny-yolov3.xml" #<--- MYRIAD
 bin_path = os.path.splitext(xml_path)[0] + ".bin"
 
 LABELS = ("person", "bicycle", "car", "motorbike", "aeroplane",
