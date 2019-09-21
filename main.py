@@ -3,6 +3,8 @@ try:
 except:
     from openvino.inference_engine import IENetwork, IEPlugin
 
+import logging
+from logging import handlers
 import cv2
 import imutils
 import time
@@ -11,6 +13,8 @@ import schedule
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from inference import *
+
+# model setting
 
 LABELS = ("person", "bicycle", "car", "motorbike", "aeroplane",
       "bus", "train", "truck", "boat", "traffic light",
@@ -29,7 +33,6 @@ LABELS = ("person", "bicycle", "car", "motorbike", "aeroplane",
       "toaster", "sink", "refrigerator", "book", "clock",
       "vase", "scissors", "teddy bear", "hair drier", "toothbrush")
 
-# model setting
 classes = 80
 coords = 4
 num = 3
@@ -53,19 +56,36 @@ box_thickness = 1
 
 drawing = False
 
+# logger
+logger = logging.getLogger("")
+logger.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
+
+stream_hander = logging.StreamHandler()
+stream_hander.setFormatter(formatter)
+logger.addHandler(stream_hander)
+
+log_max_size = 10*1024*1024
+log_file_count = 20
+
+file_handler = handlers.RotatingFileHandler(filename = "test.log", maxBytes = log_max_size, backupCount=log_file_count)
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
+
 # network 생성
-print("[INFO] Network generation")
+logger.info("Network generation")
 net = IENetwork(model = xml_path,weights = bin_path)
-print("[INFO] Success")
+logger.info("Network generation Success")
 
 # device (MYRIAD : NCS2)
-print("[INFO] Device Init")
+logger.info("Device Init")
 plugin = IEPlugin(device='MYRIAD')
-print("[INFO] Success")
+logger.info("Device Init Success")
 
-print("[INFO] Network Load...")
+logger.info("Network Load...")
 exec_net = plugin.load(net)
-print("[INFO] Success")
+logger.info("Network Load Success")
 
 def filtering_box(objects):
     # Filtering overlapping boxes
@@ -123,11 +143,11 @@ def job():
     
     count = object_counting(resized_frame, objects, obj_label = 0, drawing = drawing)
     
-    print(count)
+    logger.info("people count number : {}".format(count))
     
     end = time.time()
   
-    print("1 epoch time : ", end - start)
+    logger.info("1 epoch time : {}".format(end - start))
     
     if drawing == True:
         cv2.imshow('image',resized_frame)
