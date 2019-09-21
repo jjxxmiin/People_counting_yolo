@@ -1,7 +1,5 @@
 # OPENVINO를 이용한 human counting
 
-사람을 카운팅 하는 부분은 중간에  추가 시키지 않았다.
-
 ## 구성
 - raspberry pi 3
 - Neural Compute Stick 2 
@@ -10,7 +8,8 @@
 ## requirement
 - openvino
 - opencv 4.0.1
-
+- schedule
+- imutils
 
 ## 필독!!
 
@@ -18,16 +17,11 @@
 - [[파일 변환](https://jjeamin.github.io/pi/2019/03/08/NCS2_IR/)]
 - [[파일 변환 - YOLO](https://jjeamin.github.io/openvino/2019/03/30/yolo-openvino/)]
 
-## pd_convert
+## pb 변환기
 
 - [https://github.com/mystic123/tensorflow-yolo-v3](https://github.com/mystic123/tensorflow-yolo-v3)
 
-## ir 
-
-- `.xml`
-- `.bin`
-
-## weight
+## IR
 
 - `weight file` -> `pd file` -> `.xml`,`.bin`
 
