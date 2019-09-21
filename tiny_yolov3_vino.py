@@ -68,7 +68,7 @@ box_color = (255, 128, 0)
 box_thickness = 1
 # =======================================================================
 
-def preprocess(frame,image_size,new_x,new_y):
+def preprocess(frame,image_size,new_w,new_h):
   resized_image = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
 
   # 128로 채운다

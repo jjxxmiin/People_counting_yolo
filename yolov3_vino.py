@@ -15,6 +15,8 @@ import os
 # ============================hard coding===============================
 cam_w = 320
 cam_h = 240
+#cam_w = 1024
+#cam_h = 760
 image_size = 416
 anchors = [10,13,16,30,33,23,30,61,62,45,59,119,116,90,156,198,373,326]
 
@@ -69,7 +71,7 @@ box_color = (255, 128, 0)
 box_thickness = 1
 # =======================================================================
 
-def preprocess(frame,image_size,new_x,new_y):
+def preprocess(frame,image_size,new_w,new_h):
   resized_image = cv2.resize(frame, (new_w, new_h), interpolation=cv2.INTER_CUBIC)
 
   # 128로 채운다
@@ -214,9 +216,8 @@ while(True) :
 
   # frame preprossing
   frame = cam.read()
-  
   frame = cv2.resize(frame, (cam_w, cam_h), interpolation=cv2.INTER_AREA)
-
+  
   prepimg = preprocess(frame,image_size,new_w,new_h)
 
   start = time.time()
