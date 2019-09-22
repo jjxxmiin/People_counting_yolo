@@ -3,15 +3,13 @@ try:
 except:
     from openvino.inference_engine import IENetwork, IEPlugin
 
-import logging
 from logging import handlers
+import logging
+import urllib.request
 import cv2
-import imutils
 import time
 import os
 import schedule
-from apscheduler.schedulers.background import BackgroundScheduler
-
 from inference import *
 
 # model setting
@@ -69,9 +67,10 @@ logger.addHandler(stream_hander)
 log_max_size = 10*1024*1024
 log_file_count = 20
 
-file_handler = handlers.RotatingFileHandler(filename = "test.log", maxBytes = log_max_size, backupCount=log_file_count)
+file_handler = handlers.RotatingFileHandler(filename = "log.log", maxBytes = log_max_size, backupCount=log_file_count)
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
+
 
 # network 생성
 logger.info("Network generation")
@@ -131,29 +130,69 @@ def parsing(outputs):
 
     return filtering_box(objects)
 
+def isInternet():
+    try:
+        urllib.request.urlopen('http://216.58.192.142').read()
+        return True
+    except urllib.request.URLError as err:
+        logger.error(err)
+        return False
+
+def capture():
+    cam = cv2.VideoCapture(0)
+        
+    if cam.isOpened():
+      logger.info("Cam is working")
+      
+      ret, frame  = cam.read()
+      cv2.imwrite('test2.jpg',frame)
+      cam.release()
+    
+      return frame
+      
+    else:
+      logger.error("Cam is not working")
+      cam.release()
+      return None
+
 def job():    
     start = time.time()
+    
+    # capture
+    frame = capture()
+    
+    if frame is None:
+        return
+        
+    # internet 
+    internet = isInternet()
+    
+    if internet:
+        logger.info("Internet is working : server mode")
+    else:
+        logger.info("Internet is not working : local mode")
+    
+    # inference
     frame = cv2.imread(img_path)
-    
     resized_frame, prepimg = preprocess(frame,image_size,new_w,new_h)
-
-    outputs = exec_net.infer({'inputs': prepimg}) # inference
+    objects = parsing(exec_net.infer({'inputs': prepimg}))
     
-    objects = parsing(outputs)
-    
+    # counting
     count = object_counting(resized_frame, objects, obj_label = 0, drawing = drawing)
     
     logger.info("people count number : {}".format(count))
     
-    end = time.time()
-  
-    logger.info("1 epoch time : {}".format(end - start))
-    
+    # show
     if drawing == True:
         cv2.imshow('image',resized_frame)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        
+          
+    end = time.time()
+  
+    logger.info("1 epoch time : {}".format(end - start))
+    
+
 def main():
     schedule.every(10).seconds.do(job)
     
