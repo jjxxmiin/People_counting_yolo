@@ -5,7 +5,7 @@ except:
 
 from logging import handlers
 import logging
-import urllib.request
+from urllib import parse,request
 import cv2
 import time
 import os
@@ -71,7 +71,6 @@ file_handler = handlers.RotatingFileHandler(filename = "log.log", maxBytes = log
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
-
 # network 생성
 logger.info("Network generation")
 net = IENetwork(model = xml_path,weights = bin_path)
@@ -132,9 +131,9 @@ def parsing(outputs):
 
 def isInternet():
     try:
-        urllib.request.urlopen('http://216.58.192.142').read()
+        request.urlopen('http://216.58.192.142').read()
         return True
-    except urllib.request.URLError as err:
+    except request.URLError as err:
         logger.error(err)
         return False
 
@@ -155,6 +154,20 @@ def capture():
       cam.release()
       return None
 
+def send():
+    # server info
+    # url = ""
+    # data = {}
+    
+    data = parse.urlencode(data).encode()
+    req = request.Request(url,data=data)
+    res = request.urlopen(req)
+    
+    text = res.read()
+    status = text.decode()
+    
+    logger.info("url request status : {}".format(status))
+
 def job():    
     start = time.time()
     
@@ -169,6 +182,7 @@ def job():
     
     if internet:
         logger.info("Internet is working : server mode")
+        send()
     else:
         logger.info("Internet is not working : local mode")
     
@@ -187,7 +201,7 @@ def job():
         cv2.imshow('image',resized_frame)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-          
+        
     end = time.time()
   
     logger.info("1 epoch time : {}".format(end - start))
