@@ -1,6 +1,6 @@
 # OPENVINO를 이용한 human counting
 
-[post](https://jjeamin.github.io/yolo/2019/03/28/yolo_counting/)
+[POST](https://jjeamin.github.io/yolo/2019/03/28/yolo_counting/)
 
 # 사용법
 
