@@ -1,3 +1,5 @@
+[![HitCount](http://hits.dwyl.io/jjeamin/People_counting_yolo.svg)](http://hits.dwyl.io/jjeamin/People_counting_yolo)
+
 # OPENVINO를 이용한 human counting
 
 [POST](https://jjeamin.github.io/yolo/2019/03/28/yolo_counting/)
