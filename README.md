@@ -49,5 +49,5 @@ python3 main.py
 
 # Reference
 - [https://github.com/guillelopez/python-traffic-counter-with-yolo-and-sort](https://github.com/guillelopez/python-traffic-counter-with-yolo-and-sort)
-- [https://github.com/jjeamin/OpenVINO-YoloV3](https://github.com/jjeamin/OpenVINO-YoloV3)
+- [https://github.com/PINTO0309/OpenVINO-YoloV3](https://github.com/PINTO0309/OpenVINO-YoloV3)
 - [https://github.com/abewley/sort](https://github.com/abewley/sort)
