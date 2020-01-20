@@ -1,4 +1,8 @@
-from openvino.inference_engine import IENetwork, IEPlugin
+try:
+    from armv7l.openvino.inference_engine import IENetwork, IEPlugin
+except:
+    from openvino.inference_engine import IENetwork, IEPlugin
+    
 from imutils.video import WebcamVideoStream
 from imutils.video import FPS
 import numpy as np
@@ -6,9 +10,6 @@ import cv2
 import imutils
 import math
 import time
-# multiprocessing을 위한 유용한 모듈
-import multiprocessing as mp
-from tqdm import tqdm
 # 실시간 추적 모듈 sort 사용
 from sort import *
 
@@ -39,8 +40,8 @@ num = 3
 new_w = int(cam_w * min(image_size/cam_w, image_size/cam_h))
 new_h = int(cam_h * min(image_size/cam_w, image_size/cam_h))
 
-xml_path = '/home/pi/workspace/IR/tiny-yolov3.xml'
-bin_path = '/home/pi/workspace/IR/tiny-yolov3.bin'
+xml_path = './IR/tiny-yolov3.xml'
+bin_path = './IR/tiny-yolov3.bin'
 
 LABELS = ("person", "bicycle", "car", "motorbike", "aeroplane",
           "bus", "train", "truck", "boat", "traffic light",

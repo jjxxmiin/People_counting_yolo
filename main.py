@@ -43,7 +43,7 @@ new_w = int(cam_w * min(image_size/cam_w, image_size/cam_h))
 new_h = int(cam_h * min(image_size/cam_w, image_size/cam_h))
 
 xml_path = "./IR/yolo_v3.xml" #<--- MYRIAD
-bin_path = os.path.splitext(xml_path)[0] + ".bin"
+bin_path = "./IR/yolo_v3.bin"
 img_path = './test.jpg'
 
 # color setting

@@ -51,27 +51,13 @@ def ParseYOLOV3Output(blob, resized_im_h, resized_im_w, original_im_h, original_
     side = out_blob_h
     anchor_offset = 0
 
-    if len(anchors) == 18:   ## YoloV3
-        if side == 13:
-            anchor_offset = 2 * 6
-        elif side == 26:
-            anchor_offset = 2 * 3
-        elif side == 52:
-            anchor_offset = 2 * 0
-
-    elif len(anchors) == 12: ## tiny-YoloV3 *********
-        if side == 13:
-            anchor_offset = 2 * 3
-        elif side == 26:
-            anchor_offset = 2 * 0
-
-    else:                    ## ???
-        if side == 13:
-            anchor_offset = 2 * 6
-        elif side == 26:
-            anchor_offset = 2 * 3
-        elif side == 52:
-            anchor_offset = 2 * 0
+    if side == 13:
+        anchor_offset = 2 * 6
+    elif side == 26:
+        anchor_offset = 2 * 3
+    elif side == 52:
+        anchor_offset = 2 * 0
+            
     # 26 * 26 / 13 * 13
     side_square = side * side
 
